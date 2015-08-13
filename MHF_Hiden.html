@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <title>秘伝防具作成管理</title>
+    <meta name="description" content="">
+    <meta name="keywords" content=",">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+		});
+	</script>
+    <style type="text/css">
+	  body{
+	  		font: 12px/1.5 "meiryo","メイリオ","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro", "Osaka", "ＭＳ Ｐゴシック", "sans-serif";
+			background: #fff;
+			margin : 20px;
+	  }
+	  .wplabel{
+	  	margin-left:25px;
+		font-size:15px
+	  }
+	  .membox{
+	  	margin-top:20px;
+	  }
+	</style>
+</head>
+<body>
+	<hr>
+	<script>
+		$(function(){
+			var name= {"0":"未作成","1":"Lv1", "2":"Lv2", "3":"Lv3", "4":"Lv4", "5":"Lv5", "6":"Lv6", "7":"Lv7"
+			,"8":"FLv1", "9":"FLv2", "10":"FLv3", "11":"FLv4", "12":"FLv5", "13":"FLv6", "14":"FLv7"
+			,"15":"FXLv1", "16":"FXLv2", "17":"FXLv3", "18":"FXLv4", "19":"FXLv5", "20":"FXLv6", "21":"FXLv7"
+			,"22":"GLv1","23":"GLv2","24":"GLv3","25":"GLv4","26":"GLv5","27":"GLv6","28":"Glv7"
+			,"29":"GFLv1","30":"GFLv2","31":"GFLv3","32":"GFLv4","33":"GFLv5","34":"GFLv6","35":"GFLv7"
+			,"36":"GXLv1","37":"GXLv2","38":"GXLv3","39":"GXLv4","40":"GXLv5","41":"GXLv6","42":"GXLv7"
+			}
+			for(var i = 0; i <= 42; i++){
+				$('#hb').append($('<option>').html(name[String(i)]).val(i));$('#hb').val(0);
+				$('#ha').append($('<option>').html(name[String(i)]).val(i));$('#ha').val(0);
+				
+				$('#bb').append($('<option>').html(name[String(i)]).val(i));$('#bb').val(0);
+				$('#ba').append($('<option>').html(name[String(i)]).val(i));$('#ba').val(0);
+				
+				$('#ab').append($('<option>').html(name[String(i)]).val(i));$('#ab').val(0);
+				$('#aa').append($('<option>').html(name[String(i)]).val(i));$('#aa').val(0);
+				
+				$('#wb').append($('<option>').html(name[String(i)]).val(i));$('#wb').val(0);
+				$('#wa').append($('<option>').html(name[String(i)]).val(i));$('#wa').val(0);
+				
+				$('#lb').append($('<option>').html(name[String(i)]).val(i));$('#lb').val(0);
+				$('#la').append($('<option>').html(name[String(i)]).val(i));$('#la').val(0);
+				
+			}
+			/* var num = [[5,10,10,15,15,20,25],[0,0,0,5,10,15,25],[0,0,0,0,0,5,10],[5,0,0,0,0,0,0]];*/
+			/*var num = [[20,5,5,10,10,15,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					   [15,0,0,0,5,10,15,15,15,20,20,25,25,30,0,0,0,0,0,0,0],
+					   [10,0,0,0,0,0,0,5,5,10,10,15,15,20,20,20,25,25,30,30,35],
+					   [5,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,10,10,15,15,20]
+					  ]
+			var maisu = [
+				[20,5,5,10,10,15,20],
+				[15,0,0,0,5,10,15],
+				[10,0,0,0,0,0,0],
+				[5,0,0,0,0,0,0],
+				[15,15,20,20,25,25,30],
+				[5,5,10,10,15,15,20],
+				[20,20,25,25,30,30,35],
+				[5,5,10,10,15,15,20]
+			];*/
+			var num = [[20,5,5,10,10,15,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					   [15,0,0,0,5,10,15,15,15,20,20,25,25,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					   [10,0,0,0,0,0,0,5,5,10,10,15,15,20,20,20,25,25,30,30,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					   [5,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,10,10,15,15,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,10,10,15,15,20,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,10,10,15,15,15,20,20,25,25,0,0,0,0,0,0,0],
+                       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,10,10,15,15,20,20,20,20,25,0,0,0],
+					   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,0,0],
+					   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,10],
+					   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10],
+					  ]
+
+			$('#calc').click(function(){
+				
+				var Cnt1 = 0;var Cnt2 = 0;var Cnt3 = 0;var Cnt4 = 0;var Cnt5 = 0;var Cnt6 = 0;var Cnt7 = 0;var Cnt8 = 0;var Cnt9 = 0;var Cnt10 = 0;
+				
+				/* 頭 */
+				var afterNum1 = $('#ha').val();
+				var beforeNum1 = $('#hb').val();
+				for( var i = beforeNum1; i < afterNum1; i++ ){
+					Cnt1 = Cnt1 + num[0][i];
+					Cnt2 = Cnt2 + num[1][i];
+					Cnt3 = Cnt3 + num[2][i];
+					Cnt4 = Cnt4 + num[3][i];
+					Cnt5 = Cnt5 + num[4][i];
+					Cnt6 = Cnt6 + num[5][i];
+					Cnt7 = Cnt7 + num[6][i];
+					Cnt8 = Cnt8 + num[7][i];
+					Cnt9 = Cnt9 + num[8][i];
+					Cnt10 = Cnt10 + num[9][i];
+				}
+				
+				/* 胴 */
+				afterNum1 = $('#ba').val();
+				beforeNum1 = $('#bb').val();
+				for( var i = beforeNum1; i < afterNum1; i++ ){
+					Cnt1 = Cnt1 + num[0][i];
+					Cnt2 = Cnt2 + num[1][i];
+					Cnt3 = Cnt3 + num[2][i];
+					Cnt4 = Cnt4 + num[3][i];
+					Cnt5 = Cnt5 + num[4][i];
+					Cnt6 = Cnt6 + num[5][i];
+					Cnt7 = Cnt7 + num[6][i];
+					Cnt8 = Cnt8 + num[7][i];
+					Cnt9 = Cnt9 + num[8][i];
+					Cnt10 = Cnt10 + num[9][i];
+				}
+				
+				/* 腕 */
+				afterNum1 = $('#aa').val();
+				beforeNum1 = $('#ab').val();
+				for( var i = beforeNum1; i < afterNum1; i++ ){
+					Cnt1 = Cnt1 + num[0][i];
+					Cnt2 = Cnt2 + num[1][i];
+					Cnt3 = Cnt3 + num[2][i];
+					Cnt4 = Cnt4 + num[3][i];
+					Cnt5 = Cnt5 + num[4][i];
+					Cnt6 = Cnt6 + num[5][i];
+					Cnt7 = Cnt7 + num[6][i];
+					Cnt8 = Cnt8 + num[7][i];
+					Cnt9 = Cnt9 + num[8][i];
+					Cnt10 = Cnt10 + num[9][i];
+				}
+				
+				/* 腰 */
+				afterNum1 = $('#wa').val();
+				beforeNum1 = $('#wb').val();
+				for( var i = beforeNum1; i < afterNum1; i++ ){
+					Cnt1 = Cnt1 + num[0][i];
+					Cnt2 = Cnt2 + num[1][i];
+					Cnt3 = Cnt3 + num[2][i];
+					Cnt4 = Cnt4 + num[3][i];
+					Cnt5 = Cnt5 + num[4][i];
+					Cnt6 = Cnt6 + num[5][i];
+					Cnt7 = Cnt7 + num[6][i];
+					Cnt8 = Cnt8 + num[7][i];
+					Cnt9 = Cnt9 + num[8][i];
+					Cnt10 = Cnt10 + num[9][i];
+				}
+				
+				/* 脚 */
+				afterNum1 = $('#la').val();
+				beforeNum1 = $('#lb').val();
+				for( var i = beforeNum1; i < afterNum1; i++ ){
+					Cnt1 = Cnt1 + num[0][i];
+					Cnt2 = Cnt2 + num[1][i];
+					Cnt3 = Cnt3 + num[2][i];
+					Cnt4 = Cnt4 + num[3][i];
+					Cnt5 = Cnt5 + num[4][i];
+					Cnt6 = Cnt6 + num[5][i];
+					Cnt7 = Cnt7 + num[6][i];
+					Cnt8 = Cnt8 + num[7][i];
+					Cnt9 = Cnt9 + num[8][i];
+					Cnt10 = Cnt10 + num[9][i];
+				}
+
+				var k1s = $('#k1s').val();
+				var k2s = $('#k2s').val();
+				var k3s = $('#k3s').val();
+				var k4s = $('#k4s').val();
+				var k5s = $('#k5s').val();
+				var k6s = $('#k6s').val();
+				var k7s = $('#k7s').val();
+				var k8s = $('#k8s').val();
+				var k9s = $('#k9s').val();
+				var k10s = $('#k10s').val();
+				$('#k1').val(Cnt1 - k1s);
+				$('#k2').val(Cnt2 - k2s);
+				$('#k3').val(Cnt3 - k3s);
+				$('#k4').val(Cnt4 - k4s);
+				$('#k5').val(Cnt5 - k5s);
+				$('#k6').val(Cnt6 - k6s);
+				$('#k7').val(Cnt7 - k7s);
+				$('#k8').val(Cnt8 - k8s);
+				$('#k9').val(Cnt9 - k9s);
+				$('#k10').val(Cnt10 - k10s);
+			});
+			
+			$('#clear').click(function(){
+				if(window.confirm('クリアしますか？')){
+					localStorage.clear();
+				}
+			});
+			
+			$('#save').click(function(){
+				var obj = {};
+				obj["J"] = $('#k1s').val();
+				obj["C"] = $('#k2s').val();
+				obj["K"] = $('#k3s').val();
+				obj["T"] = $('#k4s').val();
+				
+				var JsonObj = JSON.stringify(obj);
+				alert(JsonObj);
+			});
+		});
+	</script>
+	<h4>秘伝防具作成管理</h4>
+	<p>2015/04/28 公開。まだFXLv7までしか対応していません。<br/>
+	   2015/07/16 GXLv7まで対応。保存機能は未実装。<br/>
+	</p>
+	<table>
+	<tr><th></th><td>現在Lv</td><td>作成予定Lv</td><tr>
+	<tr><th>頭</th><td><select id="hb"></select></td><td><select id="ha"></select></td><tr>
+	<tr><th>胴</th><td><select id="bb"></select></td><td><select id="ba"></select></td><tr>
+	<tr><th>腕</th><td><select id="ab"></select></td><td><select id="aa"></select></td><tr>
+	<tr><th>腰</th><td><select id="wb"></select></td><td><select id="wa"></select></td><tr>
+	<tr><th>足</th><td><select id="lb"></select></td><td><select id="la"></select></td><tr>
+	</table>
+	<button id="calc" class="btn btn-default">Calc</button><button id="calc" class="btn btn-default">Save</button><button id="calc" class="btn btn-default">Clear</button>
+	<br/>
+	所持数：<br/>
+	魂・序<input type="text" maxlength="3" size="3" id="k1s" ></text>
+	魂・中<input type="text" maxlength="3" size="3" id="k2s" ></text>
+	魂・極<input type="text" maxlength="3" size="3" id="k3s" ></text>
+	魂・天<input type="text" maxlength="3" size="3" id="k4s" ></text><br/>
+	綬・序<input type="text" maxlength="3" size="3" id="k5s" ></text>
+	綬・中<input type="text" maxlength="3" size="3" id="k6s" ></text>
+	綬・極<input type="text" maxlength="3" size="3" id="k7s" ></text><br/>
+	勲・序<input type="text" maxlength="3" size="3" id="k8s" ></text>
+	勲・中<input type="text" maxlength="3" size="3" id="k9s" ></text>
+	勲・極<input type="text" maxlength="3" size="3" id="k10s" ></text><br/>
+	<br />
+	必要数：<br/>
+	魂・序<input type="text" maxlength="3" size="3" id="k1" ></text>
+	魂・中<input type="text" maxlength="3" size="3" id="k2" ></text>
+	魂・極<input type="text" maxlength="3" size="3" id="k3" ></text>
+	魂・天<input type="text" maxlength="3" size="3" id="k4" ></text><br/>
+	綬・序<input type="text" maxlength="3" size="3" id="k5" ></text>
+	綬・中<input type="text" maxlength="3" size="3" id="k6" ></text>
+	綬・極<input type="text" maxlength="3" size="3" id="k7" ></text><br/>
+	勲・序<input type="text" maxlength="3" size="3" id="k8" ></text>
+	勲・中<input type="text" maxlength="3" size="3" id="k9" ></text>
+	勲・極<input type="text" maxlength="3" size="3" id="k10" ></text><br/>
+	<!--<br><h5>HC素材</h5>
+	ヒスイ：銀火竜の逆鱗<input type="text" maxlength="3" size="3">	黒鎧竜の熔髄<input type="text" maxlength="3" size="3"><br>
+	ブラッド：金火竜の逆鱗<input type="text" maxlength="3" size="3">	灰晶蠍の紅結晶<input type="text" maxlength="3" size="3">-->
+<hr>
+<p>
+Copyright (c) 2014 [<a href="https://twitter.com/grandtears" target="_blank">@grandtears</a>] All rights reserved.
+</p>
+</body>
+</html>
