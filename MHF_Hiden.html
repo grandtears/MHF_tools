@@ -34,6 +34,8 @@
 	<hr>
 	<script>
 		$(function(){
+			
+			/* プルダウンメニュ作成 */
 			var name= {"0":"未作成","1":"Lv1", "2":"Lv2", "3":"Lv3", "4":"Lv4", "5":"Lv5", "6":"Lv6", "7":"Lv7"
 			,"8":"FLv1", "9":"FLv2", "10":"FLv3", "11":"FLv4", "12":"FLv5", "13":"FLv6", "14":"FLv7"
 			,"15":"FXLv1", "16":"FXLv2", "17":"FXLv3", "18":"FXLv4", "19":"FXLv5", "20":"FXLv6", "21":"FXLv7"
@@ -42,6 +44,9 @@
 			,"36":"GXLv1","37":"GXLv2","38":"GXLv3","39":"GXLv4","40":"GXLv5","41":"GXLv6","42":"GXLv7"
 			}
 			for(var i = 0; i <= 42; i++){
+				$('#ib').append($('<option>').html(name[String(i)]).val(i));$('#ib').val(0);
+				$('#ia').append($('<option>').html(name[String(i)]).val(i));$('#ba').val(0);
+
 				$('#hb').append($('<option>').html(name[String(i)]).val(i));$('#hb').val(0);
 				$('#ha').append($('<option>').html(name[String(i)]).val(i));$('#ha').val(0);
 				
@@ -74,6 +79,7 @@
 				[20,20,25,25,30,30,35],
 				[5,5,10,10,15,15,20]
 			];*/
+			/* 強化に必要な枚数 */
 			var num = [[20,5,5,10,10,15,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 					   [15,0,0,0,5,10,15,15,15,20,20,25,25,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 					   [10,0,0,0,0,0,0,5,5,10,10,15,15,20,20,20,25,25,30,30,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -169,7 +175,8 @@
 					Cnt9 = Cnt9 + num[8][i];
 					Cnt10 = Cnt10 + num[9][i];
 				}
-
+				
+				/* -----計算後値設定----- */
 				var k1s = $('#k1s').val();
 				var k2s = $('#k2s').val();
 				var k3s = $('#k3s').val();
@@ -192,37 +199,86 @@
 				$('#k10').val(Cnt10 - k10s);
 			});
 			
+			/* ----- LocalStrageクリア----- */
 			$('#clear').click(function(){
 				if(window.confirm('クリアしますか？')){
 					localStorage.clear();
 				}
 			});
 			
+			/* ----- LocalStrage保存----- */
 			$('#save').click(function(){
 				var obj = {};
 				obj["J"] = $('#k1s').val();
 				obj["C"] = $('#k2s').val();
 				obj["K"] = $('#k3s').val();
 				obj["T"] = $('#k4s').val();
+				obj["JJ"] = $('#k5s').val();
+				obj["JC"] = $('#k6s').val();
+				obj["JK"] = $('#k7s').val();
+				obj["KJ"] = $('#k8s').val();
+				obj["KC"] = $('#k9s').val();
+				obj["KK"] = $('#k10s').val();
 				
 				var JsonObj = JSON.stringify(obj);
-				alert(JsonObj);
+				localStorage.setItem("maisu", JsonObj);
+			});
+			
+			/* ----- LocalStrage読み込み----- */
+			$('#read').click(function(){
+				var JsonObj = localStorage.getItem('maisu');
+				var obj = JSON.parse(JsonObj);
+
+				$('#k1s').val(obj["J"]);
+				$('#k2s').val(obj["C"]);
+				$('#k3s').val(obj["K"]);
+				$('#k4s').val(obj["T"]);
+				$('#k5s').val(obj["JJ"]);
+				$('#k6s').val(obj["JC"]);
+				$('#k7s').val(obj["JK"]);
+				$('#k8s').val(obj["KJ"]);
+				$('#k9s').val(obj["KC"]);
+				$('#k10s').val(obj["KK"]);
+			});
+			
+			/* -----作成Lv一括選択----- */
+			/* Before*/
+			$('#ib').change(function(){
+				var sel = $('#ib').val();
+
+				$('#hb').val(sel);
+				$('#bb').val(sel);
+				$('#ab').val(sel);
+				$('#wb').val(sel);
+				$('#lb').val(sel);
+			});
+			/* After*/
+			$('#ia').change(function(){
+				var sel = $('#ia').val();
+
+				$('#ha').val(sel);
+				$('#ba').val(sel);
+				$('#aa').val(sel);
+				$('#wa').val(sel);
+				$('#la').val(sel);
 			});
 		});
 	</script>
 	<h4>秘伝防具作成管理</h4>
 	<p>2015/04/28 公開。まだFXLv7までしか対応していません。<br/>
 	   2015/07/16 GXLv7まで対応。保存機能は未実装。<br/>
+	   2015/07/16 一括選択と保存機能対応。LocalStrageにClearを押すまで保存されます。<br/>
 	</p>
 	<table>
 	<tr><th></th><td>現在Lv</td><td>作成予定Lv</td><tr>
+	<tr><th>一括</th><td><select id="ib"></select></td><td><select id="ia"></select></td><tr>
 	<tr><th>頭</th><td><select id="hb"></select></td><td><select id="ha"></select></td><tr>
 	<tr><th>胴</th><td><select id="bb"></select></td><td><select id="ba"></select></td><tr>
 	<tr><th>腕</th><td><select id="ab"></select></td><td><select id="aa"></select></td><tr>
 	<tr><th>腰</th><td><select id="wb"></select></td><td><select id="wa"></select></td><tr>
 	<tr><th>足</th><td><select id="lb"></select></td><td><select id="la"></select></td><tr>
 	</table>
-	<button id="calc" class="btn btn-default">Calc</button><button id="calc" class="btn btn-default">Save</button><button id="calc" class="btn btn-default">Clear</button>
+	<button id="calc" class="btn btn-default">Calc</button><button id="save" class="btn btn-default">Save</button><button id="read" class="btn btn-default">Read</button><button id="clear" class="btn btn-default">Clear</button>
 	<br/>
 	所持数：<br/>
 	魂・序<input type="text" maxlength="3" size="3" id="k1s" ></text>
